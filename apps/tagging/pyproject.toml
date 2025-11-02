@@ -1,0 +1,21 @@
+[project]
+name = "tagging"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
+]
+readme = "README.md"
+requires-python = "==3.11.13"
+dependencies = [
+    "database @ file:///Users/weye/Documents/code/python/AudioVerse/libs/database",
+    "llm-agent @ file:///Users/weye/Documents/code/python/AudioVerse/libs/llm_agent",
+    "dotenv (>=0.9.9,<0.10.0)"
+]
+
+[tool.poetry]
+packages = [{include = "tagging", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

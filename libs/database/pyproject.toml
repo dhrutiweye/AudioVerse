@@ -1,0 +1,19 @@
+[project]
+name = "database"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pymongo (>=4.15.3,<5.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "database", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

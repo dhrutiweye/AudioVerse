@@ -1,0 +1,26 @@
+[project]
+name = "llm-agent"
+version = "0.1.0"
+description = "Base LLM Agent library for unified language model interactions"
+authors = [
+    {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
+]
+#readme = "README.md"
+requires-python = "==3.11.13"
+dependencies = [
+    "langchain (>=0.3.0)",
+    "langchain-core (>=0.3.0)",
+    "langchain-google-genai (>=1.0.5)",
+    "pydantic (>=2.7.4)",
+    "typing-extensions (>=4.10.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "langchain-openai (>=1.0.1,<2.0.0)"
+]
+
+packages = [{include = "llm_agent", from = "src"}]
+
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

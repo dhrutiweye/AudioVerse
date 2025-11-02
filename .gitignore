@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+pip-log.txt
+pip-delete-this-arg.txt
+
+# Poetry
+.poetry/
+poetry.lock
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.bak
+*~
+.DS_Store
+
+# Operating System
+.Trashes
+Thumbs.db
