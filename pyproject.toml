@@ -7,7 +7,7 @@ authors = [
     {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
 ]
 readme = "README.md"
-requires-python = "==3.11.13"
+requires-python = "==3.10.12"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
