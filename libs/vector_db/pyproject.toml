@@ -1,20 +1,18 @@
 [project]
-name = "model"
+name = "vector-db"
 version = "0.1.0"
 description = ""
 authors = [
     {name = "dhrutiweye",email = "dhrutiman.sethi@wheelseye.com"}
 ]
 readme = "README.md"
-requires-python = "==3.10.12"
+requires-python = ">=3.10"
 dependencies = [
-    "sentence-transformers (>=5.1.2,<6.0.0)",
-    "vector-db @ ../../libs/vector_db",
-    "numpy (==1.26.0)"
+    "qdrant-client (>=1.15.1,<2.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "model", from = "src"}]
+packages = [{include = "vector_db", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
