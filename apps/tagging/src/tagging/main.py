@@ -87,11 +87,16 @@ def set_recall_dataV2(data: Dict[str, Any]):
     if(_result is not None and len(_result) > 0):
         return
     for _q in queries:
-        result = agent.handle(
-            query_string=_q,
-            transcript_text=None,
-            diarized_transcript=get_complite_transcript(data)
-        )
+        try:
+            result = agent.handle(
+                query_string=_q,
+                transcript_text=None,
+                diarized_transcript=get_complite_transcript(data)
+            )
+        except Exception as ex:
+            print(f"get Exception {ex}")
+            continue
+
         new_doc = [{
             "call_id": data.get('_id'),
             "query": _q,
@@ -114,7 +119,7 @@ if __name__ == "__main__":
 
     start = datetime(yesterday.year, yesterday.month, yesterday.day, 0, 0, 0)
     end = datetime(yesterday.year, yesterday.month, yesterday.day, 23, 59, 59)
-    page = 0
+    page = 2
     batch_size = 20
     while True:
         docs = get_documents_by_date_range(db_name="call_iq",

@@ -8,8 +8,8 @@ authors = [
 readme = "README.md"
 requires-python = "==3.10.12"
 dependencies = [
-    "database @ file:///home/ubuntu/AudioVerse/libs/database",
-    "llm-agent @ file:///home/ubuntu/AudioVerse/libs/llm_agent",
+    "database @ ../../libs/database",
+    "llm-agent @ ../../libs/llm_agent",
     "dotenv (>=0.9.9,<0.10.0)"
 ]
 

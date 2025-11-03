@@ -25,3 +25,5 @@ poetry.lock
 # Operating System
 .Trashes
 Thumbs.db
+.python-version
+.env
