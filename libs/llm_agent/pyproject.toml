@@ -6,7 +6,7 @@ authors = [
     {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
 ]
 #readme = "README.md"
-requires-python = "==3.11.13"
+requires-python = "==3.10.12"
 dependencies = [
     "langchain (>=0.3.0)",
     "langchain-core (>=0.3.0)",

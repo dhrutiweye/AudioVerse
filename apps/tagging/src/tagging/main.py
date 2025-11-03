@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Dict, Any
+import os
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -12,7 +13,7 @@ load_dotenv()
 llm = ChatOpenAI(
     model="gpt-5-mini",  # or "gpt-4o"
     temperature=0.0,  # 0.0–0.3 for scoring/determinism
-    api_key=,
+    api_key=os.getenv('OPENAI_API_KEY'),
 )
 
 queries = [
@@ -100,7 +101,7 @@ def set_recall_dataV2(data: Dict[str, Any]):
             "llm_meta": str(result),
             "created_at": datetime.utcnow()
         }]
-        print(insert_documents(db_name='call_iq', collection_name="call_test_data", data_list=new_doc))
+        print(insert_documents(db_name='call_iq', collection_name="call_test_data_v2", data_list=new_doc))
         print(f"call_id: {data.get('_id')}")
         print(result)
 
@@ -108,28 +109,26 @@ def set_recall_dataV2(data: Dict[str, Any]):
 if __name__ == "__main__":
 
     today = datetime.now()
-    yesterday = today - timedelta(days=2)
+    yesterday = today - timedelta(days=6)
     print(f"start recall sync for {yesterday}")
 
     start = datetime(yesterday.year, yesterday.month, yesterday.day, 0, 0, 0)
     end = datetime(yesterday.year, yesterday.month, yesterday.day, 23, 59, 59)
     page = 0
-    batch_size = 1
+    batch_size = 20
     while True:
         docs = get_documents_by_date_range(db_name="call_iq",
                                            collection_name="audios",
                                            start_date=start,
                                            end_date=end,
                                            limit=batch_size,
-                                           offset=(page * batch_size),
-                                           uri='')
+                                           offset=(page * batch_size))
         print(f"page: {page} size: {len(docs)}")
-        if len(docs) <= 0:
+        if len(docs) < batch_size:
             break
         for i in docs:
             set_recall_dataV2(i)
         page += 1
-        break
 
     print(f"end recall sync for {yesterday}")
 

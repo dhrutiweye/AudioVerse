@@ -6,10 +6,10 @@ authors = [
     {name = "Dhrutiman Sethi",email = "dhrutiman.sethi@wheelseye.com"}
 ]
 readme = "README.md"
-requires-python = "==3.11.13"
+requires-python = "==3.10.12"
 dependencies = [
-    "database @ file:///Users/weye/Documents/code/python/AudioVerse/libs/database",
-    "llm-agent @ file:///Users/weye/Documents/code/python/AudioVerse/libs/llm_agent",
+    "database @ file:///home/ubuntu/AudioVerse/libs/database",
+    "llm-agent @ file:///home/ubuntu/AudioVerse/libs/llm_agent",
     "dotenv (>=0.9.9,<0.10.0)"
 ]
 
