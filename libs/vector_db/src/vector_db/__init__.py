@@ -1,7 +1,7 @@
 from .VectorDbQudrent import search, \
     search_groups, build_filter, \
     get_point, update_payload, upsert_points, \
-    ensure_collection, get_client
+    ensure_collection
 
 __all__ = [
     'search',
@@ -10,5 +10,5 @@ __all__ = [
     'update_payload',
     'upsert_points',
     'ensure_collection',
-    'get_client'
+    'build_filter'
 ]

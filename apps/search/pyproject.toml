@@ -1,0 +1,20 @@
+[project]
+name = "search"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "dhrutiweye",email = "dhrutiman.sethi@wheelseye.com"}
+]
+readme = "README.md"
+requires-python = "==3.10.12"
+dependencies = [
+    "vector-db @ file:///Users/weye/Documents/code/python/AudioVerse/libs/vector_db",
+    "model @ file:///Users/weye/Documents/code/python/AudioVerse/libs/model"
+]
+
+[tool.poetry]
+packages = [{include = "search", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -96,3 +96,26 @@ class Embedder:
             convert_to_numpy=True,
             device=self.device
         ).tolist()
+
+    def embed_text_encode(self, texts):
+        return self.model.encode(
+            texts,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            device=self.device
+        ).tolist()
+
+    def _embed_query_multi(self, text: str, enhance_short: bool = True) -> List[float]:
+        text = (text or "").strip()
+        variants = [text]
+        if enhance_short and len(text.split()) <= 2:
+            v = text.lower()
+            variants.extend({v, v.rstrip("s"), v + " details", "information about " + v})
+            variants = list({x for x in variants if x})
+        vecs = self.model(variants, convert_to_numpy=True,
+                          normalize_embeddings=True,
+                          show_progress_bar=False,
+                          device=self.device())
+        return vecs.mean(axis=0).tolist()
+

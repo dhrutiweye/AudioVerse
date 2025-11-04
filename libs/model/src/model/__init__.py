@@ -1,5 +1,6 @@
 from .Indexing import index_transcript
 from .EmbedderModel import Embedder
+from .ReRankingModel import ReRanking
 from .util import compute_quality_signals
 from .dto import Segment, IndexRequest, RagConfig
 
@@ -9,5 +10,6 @@ __all__ = [
     'compute_quality_signals',
     'Segment',
     'IndexRequest',
-    'RagConfig'
+    'RagConfig',
+    'ReRanking'
 ]

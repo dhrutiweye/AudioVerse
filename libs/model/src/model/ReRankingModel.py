@@ -8,9 +8,10 @@ from util.ReRankerHelper import _minmax_normalize, _detect_and_normalize_rerank
 
 
 class ReRanking:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str | None):
         self.device = get_device()
-        self.model = CrossEncoder("BAAI/bge-reranker-v2-m3").to(get_device())
+        model_name = model_name or "BAAI/bge-reranker-v2-m3"
+        self.model = CrossEncoder(model_name).to(get_device())
         print(f"Loaded embedding model: {model_name} on {self.device}")
 
     def predict_list(self, pairs: list[Tuple[str, str]]):
