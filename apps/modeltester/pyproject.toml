@@ -1,5 +1,5 @@
 [project]
-name = "search"
+name = "modeltester"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,13 +8,14 @@ authors = [
 readme = "README.md"
 requires-python = "==3.10.12"
 dependencies = [
-    "vector-db @ ../../libs/vector_db",
     "model @ ../../libs/model",
-    "database @ ../../libs/database"
+    "database @ ../../libs/database",
+    "llm-agent @ ../../libs/llm_agent",
+    "vector-db @ ../../libs/vector_db"
 ]
 
 [tool.poetry]
-packages = [{include = "search", from = "src"}]
+packages = [{include = "modeltester", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

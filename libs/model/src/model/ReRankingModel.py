@@ -1,9 +1,9 @@
 import time
 from typing import Tuple
 
-from util import get_device
+from .helper import get_device
 from sentence_transformers import CrossEncoder
-from util.ReRankerHelper import _minmax_normalize, _detect_and_normalize_rerank
+from .helper.ReRankerHelper import _minmax_normalize, _detect_and_normalize_rerank
 
 
 

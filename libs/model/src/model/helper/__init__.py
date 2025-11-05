@@ -1,4 +1,4 @@
-from QualitiHelper import compute_quality_signals
+from .QualitiHelper import compute_quality_signals
 import torch
 
 def get_device():

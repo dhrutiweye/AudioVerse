@@ -1,7 +1,7 @@
 from .Indexing import index_transcript
 from .EmbedderModel import Embedder
 from .ReRankingModel import ReRanking
-from .util import compute_quality_signals
+from .helper import compute_quality_signals, get_device
 from .dto import Segment, IndexRequest, RagConfig
 
 __all__ = [
@@ -11,5 +11,6 @@ __all__ = [
     'Segment',
     'IndexRequest',
     'RagConfig',
-    'ReRanking'
+    'ReRanking',
+    'get_device'
 ]

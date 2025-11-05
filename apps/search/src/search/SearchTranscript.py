@@ -4,14 +4,14 @@ import time
 from typing import Any, Dict, List, Optional
 
 import torch
-from .SearchRequest import SearchRequest
+from SearchRequest import SearchRequest
 from model import Embedder, ReRanking
 from vector_db import ensure_collection, build_filter, search_groups as q_search_groups
 
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-2910")
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-0511")
 _bi = Embedder(os.getenv("EMBED_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
-EMBED_DIM = _bi.dim()
+EMBED_DIM = _bi.dim
 ensure_collection(EMBED_DIM, COLLECTION_NAME)
 
 # ---- Query helpers ----

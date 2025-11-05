@@ -1,9 +1,8 @@
-import torch
 from sentence_transformers import SentenceTransformer
 from datetime import datetime
 import re
 from typing import List, Dict, Any, Optional
-from util import get_device
+from .helper import get_device
 
 from .dto import Segment
 
@@ -104,7 +103,7 @@ class Embedder:
             show_progress_bar=False,
             convert_to_numpy=True,
             device=self.device
-        ).tolist()
+        )
 
     def _embed_query_multi(self, text: str, enhance_short: bool = True) -> List[float]:
         text = (text or "").strip()
