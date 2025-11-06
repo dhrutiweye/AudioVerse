@@ -128,8 +128,8 @@ def get_data(p_vector, q_vector, threshold = 0.5):
 
 
 if __name__=="__main__":
-    call_id =45591
-    _q="Conversation reached till price stage in sales conversation for diesel sensor"
+    call_id =32451
+    _q="Certain feature in product is not working properly"
     print(_get_default_mongo_url())
     doc = get_document_by_id(
         db_name="call_iq",

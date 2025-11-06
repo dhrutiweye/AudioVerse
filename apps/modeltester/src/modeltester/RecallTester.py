@@ -8,7 +8,8 @@ from model import Embedder, ReRanking
 from vector_db import search_groups as q_search_groups
 
 load_dotenv()
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-0511")
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-3010")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data")
 embedder = Embedder(os.getenv("EMBED_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 128)
@@ -22,7 +23,7 @@ EMBED_DIM = embedder.dim
 def getCallByQueri(_q) -> list[int]:
     docs = get_documents_by_filter(
         db_name='call_iq',
-        collection_name='call_test_data_v2',
+        collection_name=MONGO_COLLECTION,
         data={
             'query': _q,
             'llm_is_related': True
@@ -30,11 +31,11 @@ def getCallByQueri(_q) -> list[int]:
     )
     return [i.get('call_id') for i in docs]
 
-def getEmbarding(_q, _size=10, scor=0.1):
+def getEmbarding(_q, _size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
     groups = q_search_groups(
         query_vector=_embed_query_multi(_q),
         group_by="call_id",
-        group_size=1,
+        group_size=group_size,
         limit=int(_size*1.5),
         score_threshold=scor,
         query_filter=None,
@@ -61,7 +62,7 @@ def getEmbarding(_q, _size=10, scor=0.1):
             })
 
     bests, _s = _rm._rerank_and_choose_top(_q, cands,
-                                           rerank_gate_prob=0.001,
+                                           rerank_gate_prob=rerank_gate_prob,
                                            dense_gate=scor,
                                            top_k=_size, _search_v2=True)
 
@@ -69,9 +70,9 @@ def getEmbarding(_q, _size=10, scor=0.1):
 
 
 if __name__ == "__main__":
-    queri = "Conversation reached till price stage in sales conversation for diesel sensor"
+    queri = "Certain feature in product is not working properly"
     t_data = getCallByQueri(queri)
-    c, b = getEmbarding(queri, 15, 0.2)
+    c, b = getEmbarding(queri, 100, 0.2, 0.0004, 5)
     c_map = {
         i.get('payload', {}).get('call_id'): i.get('score', 0)
         for i in c if i.get('payload', {}).get('call_id')  # ensures key exis
