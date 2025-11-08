@@ -109,3 +109,37 @@ class ReRanking:
         return ranked[:top_k], str(f're_scor {_t2-_t1} auto-detected {_t3-_t2} '
                                    f'Weighted fusion {_t4- _t3} Relevance gates {_t5 - _t4} final {time.time_ns() - _t5}')
 
+    def filter_relevant_chunks(
+            self,
+            query: str,
+            candidates: list[dict],
+            rerank_gate_prob: float = 0.01,
+    ):
+        """
+        Filters candidate chunks by query relevance using a cross-encoder.
+
+        Args:
+            model: Loaded CrossEncoder model.
+            query (str): The user query.
+            candidates (list[dict]): List of dicts, each with at least {'text': str}.
+            rerank_gate_prob (float): Threshold probability for filtering.
+
+        Returns:
+            list[dict]: List of relevant candidates with 'score' added.
+        """
+        if not candidates:
+            return []
+
+        # Create pairs (query, text)
+        pairs = [(query, c.get("text", "")) for c in candidates]
+
+        # Get relevance probabilities
+        scores = self.model.predict(pairs)
+
+        # Add scores back into candidate dicts
+        for cand, score in zip(candidates, scores):
+            cand["r_score"] = float(score)
+
+        # Filter by threshold
+        relevant = [c for c in candidates if c["r_score"] >= rerank_gate_prob]
+        return relevant

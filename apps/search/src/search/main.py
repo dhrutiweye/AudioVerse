@@ -35,7 +35,7 @@ if __name__ == "__main__":
         m_data = []
         t_data = []
         req = SearchRequest(query=_q,
-                            size=100, page=0, group_hits=1, min_score=0.2)
+                            size=100, page=0, group_hits=1, min_score=0.2, rerank_gate_prob=0.0000001)
         results = search(req)
         print(results)
         for i in results.get('results', []):

@@ -12,14 +12,12 @@ from model.dto import IndexRequest, Segment
 from database import get_document_by_id
 
 load_dotenv()
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-3010")
 embedder = Embedder(os.getenv("EMBED_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 128)
 CHUNK_OVERLAP = os.getenv("CHUNK_OVERLAP", 30)
-CHAR_LENGTH = os.getenv("CHAR_LENGTH", 15)
+CHAR_LENGTH = os.getenv("CHAR_LENGTH", 5)
 CONTENT_DENSITY = os.getenv("CONTENT_DENSITY", 0.18)
-EMBED_DIM = embedder.dim
 
 
 
@@ -36,6 +34,10 @@ def index_transcript(req: IndexRequest) -> Dict[str, Any]:
         if sig["char_len"] > CHAR_LENGTH and sig["content_density"] > CONTENT_DENSITY:
             c["_signals"] = sig
             enriched.append(c)
+
+    print(f"chunks {chunks}")
+    print(f"enriched {enriched}")
+
 
     vecs = embedder.embed_texts([c["text"] for c in enriched])
     point_ids = [f"{req.call_id}:{i}" for i in range(len(enriched))]
@@ -87,7 +89,7 @@ def index_from_mongo_record(data: Dict[str, Any], default_lang: str = "hi") -> D
         operator_phone=(data.get("metadata") or {}).get("operator_phone"),
         call_duration=(data.get('duration', 0))
     )
-    return index_transcript(ts)
+    return index_transcript(ts), [x.text for x in segs]
 
 def _embed_query_multi(text: str, enhance_short: bool = True) -> List[float]:
     text = (text or "").strip()
@@ -127,8 +129,10 @@ def get_data(p_vector, q_vector, threshold = 0.5):
     return filtered_indices
 
 
+samp= "काम नहीं कर रहा सब कुछ तो रुक जा रही है"
+
 if __name__=="__main__":
-    call_id =32451
+    call_id =35799
     _q="Certain feature in product is not working properly"
     print(_get_default_mongo_url())
     doc = get_document_by_id(
@@ -137,14 +141,17 @@ if __name__=="__main__":
         doc_id=int(call_id)
     )
     print(doc)
-    points = index_from_mongo_record(doc)
-    # print(points)
+    points, texts = index_from_mongo_record(doc)
+
+    print(texts)
 
     p_vector = [i.get('vector') for i in points]
-    q_vector = _embed_query_multi(_q)
-    _ex = get_data(p_vector, q_vector, 0.1)
+    q_vector = _embed_query_multi(_q, False)
+    t_vector = _embed_query_multi(samp, False)
+    _ex = get_data(p_vector, q_vector, 0.2)
 
-    [print(points[i].get('payload',{}).get('text')) for i in _ex]
+    cand = [points[i].get('payload',{}).get('text') for i in _ex]
+
 
 
 
