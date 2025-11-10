@@ -76,7 +76,7 @@ def build_sentence_units(segments: List[Segment]) -> List[Dict[str, Any]]:
 class Embedder:
     def __init__(self, model_name: str):
         self.device = get_device()
-        self.model = SentenceTransformer(model_name).to(self.device)
+        self.model = SentenceTransformer(model_name,trust_remote_code=True).to(self.device)
         print(f"Loaded embedding model: {model_name} on {self.device}")
 
     @property
@@ -105,16 +105,13 @@ class Embedder:
             device=self.device
         )
 
-    def _embed_query_multi(self, text: str, enhance_short: bool = True) -> List[float]:
+    def embed_query_multi(self, text: str, enhance_short: bool = True) -> List[float]:
         text = (text or "").strip()
         variants = [text]
         if enhance_short and len(text.split()) <= 2:
             v = text.lower()
             variants.extend({v, v.rstrip("s"), v + " details", "information about " + v})
             variants = list({x for x in variants if x})
-        vecs = self.model(variants, convert_to_numpy=True,
-                          normalize_embeddings=True,
-                          show_progress_bar=False,
-                          device=self.device())
+        vecs = self.embed_text_encode(variants)
         return vecs.mean(axis=0).tolist()
 

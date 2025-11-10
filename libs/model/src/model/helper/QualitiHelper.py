@@ -5,7 +5,7 @@ from typing import Dict, Any, List, Optional
 # keep small, high-signal lists; extend over time
 GREETINGS = {
     "hi", "hello", "hey", "good", "morning", "afternoon", "evening",
-    "नमस्ते", "नमस्कार", "हेलो", "हैलो", "जी", "बोलिए", "सुनिए", "हाँ", "हां", "हांजी", "जी सर"
+    "नमस्ते", "नमस्कार", "हेलो", "हैलो", "जी", "बोलिए", "सुनिए", "हाँ", "हां", "हांजी", "जी सर", "सर"
 }
 STOPWORDS = GREETINGS | {
     "the", "a", "an", "to", "is", "are", "am", "ok", "okay", "haan", "haanji", "acha", "achha", "hmm", "hmmm"
@@ -20,7 +20,8 @@ _tok = re.compile(r"\p{L}+", re.UNICODE)
 
 
 def tokens(text: str) -> List[str]:
-    return _tok.findall((text or "").lower())
+    # return _tok.findall((text or "").lower())
+    return [a.lower() for a in text.split(" ")]
 
 def keyword_hits(text: str):
     toks = [t.lower() for t in _tok.findall(text or "")]

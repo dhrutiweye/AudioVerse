@@ -27,3 +27,4 @@ poetry.lock
 Thumbs.db
 .python-version
 .env
+*.csv

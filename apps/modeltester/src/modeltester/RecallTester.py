@@ -4,15 +4,15 @@ import os
 from database import get_documents_by_filter, get_unique_values_by_filter
 from dotenv import load_dotenv
 
-from CallQueriTester import _embed_query_multi
 from model import Embedder, ReRanking
 from model.FlagModel import FlagModel
 from vector_db import search_groups as q_search_groups
 
 load_dotenv()
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-3010")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data")
-embedder = Embedder(os.getenv("EMBED_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-0911")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data_v2")
+model2='google/embeddinggemma-300m'
+embedder = Embedder(os.getenv("EMBED_MODEL", model2))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 _fm = FlagModel(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 128)
@@ -34,12 +34,13 @@ def getCallByQueri(_q) -> list[int]:
     )
     return [i.get('call_id') for i in docs]
 
-def getEmbarding(_q, _size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
+def getEmbarding(_q, size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
+    _size = int(size/2)
     groups = q_search_groups(
-        query_vector=_embed_query_multi(_q),
+        query_vector=embedder.embed_query_multi(_q),
         group_by="call_id",
         group_size=group_size,
-        limit=int(_size),
+        limit=int(_size*2),
         score_threshold=scor,
         query_filter=None,
         collection=COLLECTION_NAME,
@@ -47,7 +48,7 @@ def getEmbarding(_q, _size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
         with_vectors=False,
         order_by=None
     )
-    groups = groups.groups[0:0 + int(_size)] if groups else []
+    groups = groups.groups[0:0 + int(_size*2)] if groups else []
     cands = []
     for g in groups or []:
         hits = getattr(g, "hits", None) or getattr(g, "scored_points", None) or []
@@ -64,6 +65,9 @@ def getEmbarding(_q, _size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
                 "payload": pl,
             })
 
+    if(rerank_gate_prob <=0.0):
+        return (cands, [])
+
     bests, _s = _rm._rerank_and_choose_top(_q, cands,
                                            rerank_gate_prob=rerank_gate_prob,
                                            dense_gate=scor,
@@ -72,10 +76,11 @@ def getEmbarding(_q, _size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
 
     return (cands, bests)
 
-def logQueriProference(_q, data = []):
+def logQueriProference(_q,size, p_s=0.3, r_s=0.00000001 ,data = []):
     queri = _q
     t_data = data if len(data) > 0 else getCallByQueri(queri)
-    c, b = getEmbarding(queri, 100, 0.2, 0.0000001, 5)
+    c, b = getEmbarding(queri, size, p_s, r_s, 3)
+    # c, b = getEmbarding(queri, 100, 0.2, 0.0, 5)
     # c, b = getEmbarding(queri, 100, 0.2, 0.0, 5)
 
     c_map = {
@@ -92,8 +97,8 @@ def logQueriProference(_q, data = []):
     b_data = list(set([i.get('payload', {}).get('call_id') for i in b]))
     c_com = [x for x in c_data if int(x) in t_data]
     b_com = [x for x in b_data if int(x) in t_data]
-    c_p = len(c_com) / len(c_data)
-    b_p = len(b_com) / len(b_data)
+    c_p = len(c_com) / len(c_data) if len(c_data) >0 else 0
+    b_p = len(b_com) / len(b_data) if len(b_data) >0 else 0
     print(t_data)
     print(c_p, b_p)
     print(c_map)
@@ -124,25 +129,27 @@ def logQueriProference(_q, data = []):
     print(f"r F1 score {_f1sr}")
 
     print([a for a in c_data if a not in b_data])
-    return [_q, _p, _r, _f1s, _pr, _rr, _f1sr]
+    return [_q, size,_p, _r, _f1s, _pr, _rr, _f1sr, ",".join(c_data)]
 
 
 if __name__ == "__main__":
     queries = all_id = get_unique_values_by_filter(
         db_name='call_iq',
-        collection_name='call_test_data',
+        collection_name=MONGO_COLLECTION,
         column_name='query',
         filter_data=None,
         offset=0,
         limit=1000
     )
     data=[]
-    for i in queries:
-        print(f"data for {i}")
-        data.append(logQueriProference(i))
+    for _q in queries:
+        for i in [10, 50, 100, 200]:
+            print(f"data for {i}")
+            data.append(logQueriProference(_q, size=int(i), p_s=0.2, r_s=0.0000001))
+        break
 
-    with open("call_data.csv", "w", newline="") as f:
+    with open("call_data.csv", "a", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["query", "m_p", "m_r", "m_f1", "r_p", "r_r", "r_f1"])  # header
+        writer.writerow(["query","size" ,"m_p", "m_r", "m_f1", "r_p", "r_r", "r_f1", "data"])  # header
         writer.writerows(data)
 
