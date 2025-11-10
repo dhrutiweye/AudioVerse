@@ -9,8 +9,8 @@ from model.FlagModel import FlagModel
 from vector_db import search_groups as q_search_groups
 
 load_dotenv()
-COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-0911")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data_v2")
+COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "ds-test-recall-1011")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data")
 model2='google/embeddinggemma-300m'
 embedder = Embedder(os.getenv("EMBED_MODEL", model2))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
@@ -129,7 +129,7 @@ def logQueriProference(_q,size, p_s=0.3, r_s=0.00000001 ,data = []):
     print(f"r F1 score {_f1sr}")
 
     print([a for a in c_data if a not in b_data])
-    return [_q, size,_p, _r, _f1s, _pr, _rr, _f1sr, ",".join(c_data)]
+    return [_q, size,_p, _r, _f1s, _pr, _rr, _f1sr, ",".join(c_data), ",".join(b_data)]
 
 
 if __name__ == "__main__":
@@ -148,8 +148,8 @@ if __name__ == "__main__":
             data.append(logQueriProference(_q, size=int(i), p_s=0.2, r_s=0.0000001))
         break
 
-    with open("call_data.csv", "a", newline="") as f:
+    with open("call_data.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["query","size" ,"m_p", "m_r", "m_f1", "r_p", "r_r", "r_f1", "data"])  # header
+        writer.writerow(["query","size" ,"m_p", "m_r", "m_f1", "r_p", "r_r", "r_f1", "m_data", "r_data"])  # header
         writer.writerows(data)
 
