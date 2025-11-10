@@ -3,8 +3,7 @@ import os
 
 from database import get_documents_by_filter, get_unique_values_by_filter
 from dotenv import load_dotenv
-from qdrant_client.grpc import FieldCondition
-from qdrant_client.http.models import Filter, MatchValue
+from qdrant_client.http.models import Filter, MatchValue, FieldCondition
 
 from model import Embedder, ReRanking
 from model.FlagModel import FlagModel
