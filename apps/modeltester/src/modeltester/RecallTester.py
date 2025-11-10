@@ -38,8 +38,10 @@ def getCallByQueri(_q) -> list[int]:
 def getEmbarding(_q, size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
     _size = int(size)
     qdrant_filter = Filter(
-        must=[
-            FieldCondition(key="chunk_type", match=MatchValue(value='small'))])
+        should=[
+            FieldCondition(key="chunk_type", match=MatchValue(value='medium')),
+            FieldCondition(key="chunk_type", match=MatchValue(value='large')),
+        ])
     groups = q_search_groups(
         query_vector=embedder.embed_query_multi(_q),
         group_by="call_id",
@@ -101,8 +103,8 @@ def logQueriProference(_q,size, p_s=0.3, r_s=0.00000001 ,data = []):
     b_data = list(set([i.get('payload', {}).get('call_id') for i in b]))
     c_com = [x for x in c_data if int(x) in t_data]
     b_com = [x for x in b_data if int(x) in t_data]
-    c_p = len(c_com) / len(c_data) if len(c_data) >0 else 0
-    b_p = len(b_com) / len(b_data) if len(b_data) >0 else 0
+    c_p = len(c_com) / len(c_data) if len(c_data) >0 else -1
+    b_p = len(b_com) / len(b_data) if len(b_data) >0 else -1
     print(t_data)
     print(c_p, b_p)
     print(c_map)
@@ -113,9 +115,9 @@ def logQueriProference(_q,size, p_s=0.3, r_s=0.00000001 ,data = []):
     TP = len(c_com)
     FP = len(c_data) - len(c_com)
     FN = len(t_data) - len(c_com)
-    _p = TP / (TP + FP) if (TP + FP) > 0 else 0
-    _r = TP / (TP + FN) if (TP + FN) > 0 else 0
-    _f1s = 2 * (_p*_r/(_p+_r)) if (_p + _r) > 0 else 0
+    _p = TP / (TP + FP) if (TP + FP) > 0 else -1
+    _r = TP / (TP + FN) if (TP + FN) > 0 else -1
+    _f1s = 2 * (_p*_r/(_p+_r)) if (_p + _r) > 0 else -1
     print(f"c presition {_p}")
     print(f"c recall {_r}")
     print(f" cF1 score {_f1s}")
@@ -125,9 +127,9 @@ def logQueriProference(_q,size, p_s=0.3, r_s=0.00000001 ,data = []):
     TP = len(b_com)
     FP = len(b_data) - len(b_com)
     FN = len(t_data) - len(b_com)
-    _pr = TP / (TP + FP) if (TP + FP) > 0 else 0
-    _rr = TP / (TP + FN) if (TP + FN) > 0 else 0
-    _f1sr = 2 * (_pr * _rr / (_pr + _rr)) if (_pr + _rr) > 0 else 0
+    _pr = TP / (TP + FP) if (TP + FP) > 0 else -1
+    _rr = TP / (TP + FN) if (TP + FN) > 0 else -1
+    _f1sr = 2 * (_pr * _rr / (_pr + _rr)) if (_pr + _rr) > 0 else -1
     print(f"r presition {_pr}")
     print(f"r recall {_rr}")
     print(f"r F1 score {_f1sr}")
