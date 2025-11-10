@@ -146,7 +146,6 @@ if __name__ == "__main__":
         for i in [10, 50, 100, 200]:
             print(f"data for {i}")
             data.append(logQueriProference(_q, size=int(i), p_s=0.2, r_s=0.0000001))
-        break
 
     with open("call_data.csv", "w", newline="") as f:
         writer = csv.writer(f)
