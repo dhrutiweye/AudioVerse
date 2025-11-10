@@ -3,6 +3,8 @@ import os
 
 from database import get_documents_by_filter, get_unique_values_by_filter
 from dotenv import load_dotenv
+from qdrant_client.grpc import FieldCondition
+from qdrant_client.http.models import Filter, MatchValue
 
 from model import Embedder, ReRanking
 from model.FlagModel import FlagModel
@@ -36,13 +38,16 @@ def getCallByQueri(_q) -> list[int]:
 
 def getEmbarding(_q, size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
     _size = int(size/2)
+    qdrant_filter = Filter(
+        must=[
+            FieldCondition(key="chunk_type", match=MatchValue(value='small'))])
     groups = q_search_groups(
         query_vector=embedder.embed_query_multi(_q),
         group_by="call_id",
         group_size=group_size,
         limit=int(_size*2),
         score_threshold=scor,
-        query_filter=None,
+        query_filter=qdrant_filter,
         collection=COLLECTION_NAME,
         with_payload=True,
         with_vectors=False,
