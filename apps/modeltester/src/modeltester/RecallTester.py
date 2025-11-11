@@ -38,7 +38,7 @@ def getCallByQueri(_q) -> list[int]:
 def getEmbarding(_q, size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
     _size = int(size)
     qdrant_filter = Filter(
-        should=[
+        must_not=[
             FieldCondition(key="chunk_type", match=MatchValue(value='medium')),
             FieldCondition(key="chunk_type", match=MatchValue(value='large')),
         ])
@@ -149,8 +149,8 @@ if __name__ == "__main__":
     )
     data=[]
     for _q in queries:
-        for i in [10, 50, 100, 200]:
-            print(f"data for {i}")
+        print(f"data for {_q}")
+        for i in [10, 50, 100]:
             data.append(logQueriProference(_q, size=int(i), p_s=0.2, r_s=0.0001))
 
     with open("call_data.csv", "w", newline="") as f:
