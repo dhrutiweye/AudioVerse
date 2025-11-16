@@ -19,6 +19,7 @@ embedder = Embedder(os.getenv("EMBED_MODEL", model2))
 print(embedder.dim)
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 _rm2 = ReRanking("jinaai/jina-reranker-v2-base-multilingual", 2)
+_rm3 = ReRanking("Alibaba-NLP/gte-multilingual-reranker-base", 2)
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 100)
 CHUNK_OVERLAP = os.getenv("CHUNK_OVERLAP", 20)
 CHAR_LENGTH = os.getenv("CHAR_LENGTH", 5)
@@ -86,6 +87,7 @@ def index_transcript(req: IndexRequest) -> Dict[str, Any]:
             "date_ts": date_ts,
             "lang": req.lang,
             "tokens": c["tokens"],
+            "chunk_type": c['chunk_type'],
             **c["_signals"]
         }
         points.append({"id": str(uuid.uuid4()), "vector": v, "payload": payload})
@@ -164,7 +166,7 @@ def get_data(p_vector, q_vector, threshold = 0.5):
 samp= "काम नहीं कर रहा सब कुछ तो रुक जा रही है"
 
 if __name__=="__main__":
-    call_id =45371 # 35799 36102
+    call_id =44862 # 35799 36102
     _q="Certain feature in product is not working properly"
     print(_get_default_mongo_url())
     doc = get_document_by_id(

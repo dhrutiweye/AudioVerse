@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from qdrant_client.http.models import Filter, MatchValue, FieldCondition
 
 from model import Embedder, ReRanking
-from model.FlagModel import FlagModel
 from vector_db import search_groups as q_search_groups
 
 load_dotenv()
@@ -15,7 +14,6 @@ MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "call_test_data")
 model2='google/embeddinggemma-300m'
 embedder = Embedder(os.getenv("EMBED_MODEL", model2))
 _rm = ReRanking(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
-_fm = FlagModel(os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3"))
 CHUNK_SIZE = os.getenv("CHUNK_SIZE", 128)
 CHUNK_OVERLAP = os.getenv("CHUNK_OVERLAP", 30)
 CHAR_LENGTH = os.getenv("CHAR_LENGTH", 15)
@@ -38,7 +36,7 @@ def getCallByQueri(_q) -> list[int]:
 def getEmbarding(_q, size=10, scor=0.1, rerank_gate_prob=0.001, group_size=1):
     _size = int(size)
     qdrant_filter = Filter(
-        must_not=[
+        should=[
             FieldCondition(key="chunk_type", match=MatchValue(value='medium')),
             FieldCondition(key="chunk_type", match=MatchValue(value='large')),
         ])
@@ -148,9 +146,9 @@ if __name__ == "__main__":
         limit=1000
     )
     data=[]
-    for _q in queries:
-        print(f"data for {_q}")
-        for i in [10, 50, 100]:
+    for _q in ['Certain feature in product is not working properly']:
+        for i in [10, 50, 100, 200]:
+            print(f"data for {_q} {i}")
             data.append(logQueriProference(_q, size=int(i), p_s=0.2, r_s=0.0001))
 
     with open("call_data.csv", "w", newline="") as f:
