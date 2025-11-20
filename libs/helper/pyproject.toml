@@ -1,0 +1,21 @@
+[project]
+name = "helper"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "dhrutiweye",email = "dhrutiman.sethi@wheelseye.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "boto3 (>=1.41.0,<2.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "python-json-logger (>=4.0.0,<5.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "helper", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
