@@ -5,7 +5,7 @@ from sarvam_client import SarvamSpeechService
 
 async def main():
     service = SarvamSpeechService(
-        api_key="sk_vb3ohrdq_fGv55kuexWshakBpNStR8jsD",
+        api_key="${your_key}",
         output_dir="./output"
     )
 
@@ -15,7 +15,9 @@ async def main():
     ]
 
     # for audio in audio_files:
-    await service.transcribe(audio_files, "hi-IN")
+    return await service.transcribe(audio_files, "hi-IN")
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # print(asyncio.run(main()))
+    pass

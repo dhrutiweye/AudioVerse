@@ -53,6 +53,7 @@ class SarvamSpeechService:
 
         # Download final output
         await job.download_outputs(output_dir=self.output_dir)
-
+        mappings = await job.get_output_mappings()
+        file_names = [f"{m['input_file']}.json" for m in mappings]
         self.logger.info(f"✅ Output saved to {self.output_dir}")
-        return True
+        return file_names
