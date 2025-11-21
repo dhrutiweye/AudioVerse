@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from helper import S3Service
@@ -23,7 +24,7 @@ def get_file_from_s3(bucket: str, s3_key: str) -> str:
     return tmp
 
 def get_transcript_from_stt(path: str):
-    file_paths = _sarvamclinet.transcribe([path], "hi-IN")
+    file_paths = asyncio.run(_sarvamclinet.transcribe([path], "hi-IN"))
     return file_paths
 
 def uploas_transcript(bucket: str, s3_key: str, filepath :str) -> str:
