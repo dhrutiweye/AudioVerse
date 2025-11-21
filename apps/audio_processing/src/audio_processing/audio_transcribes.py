@@ -18,7 +18,7 @@ _sarvamclinet = SarvamSpeechService(os.getenv('API_SUBSCRIPTION_KEY'),
                                     output_dir=tempfile.gettempdir())
 
 def get_file_from_s3(bucket: str, s3_key: str) -> str:
-    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3").name
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f"{s3_key.split('/')[-1].split('.')[-1]}", prefix=f"{s3_key.split('/')[-1].split('.')[0]}").name
     logger.info(f"{tmp}")
     _s3service.download_file(bucket, s3_key, tmp)
     return tmp
