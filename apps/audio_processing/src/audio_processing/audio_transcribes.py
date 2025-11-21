@@ -14,7 +14,7 @@ logger = get_logger(os.path.basename(__file__))
 
 _s3service = S3Service()
 _sarvamclinet = SarvamSpeechService(os.getenv('API_SUBSCRIPTION_KEY'),
-                                    output_dir=tempfile.tempdir)
+                                    output_dir=tempfile.gettempdir())
 
 def get_file_from_s3(bucket: str, s3_key: str) -> str:
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3").name
@@ -40,7 +40,7 @@ def uploas_transcript(bucket: str, s3_key: str, filepath :str) -> str:
     return filepath
 
 if __name__=="__main__":
-    x = get_file_from_s3(os.getenv('S3_BUCKET_NAME') , 'VoiceAI/recording/20251030163646.mp3')
+    x = get_file_from_s3(os.getenv('S3_BUCKET_NAME') , 'VoiceAI/recording/4_nov_2025_1763414527466.mp3')
     files = get_transcript_from_stt(x)
     result_key = [uploas_transcript(
         os.getenv('S3_BUCKET_NAME'),
