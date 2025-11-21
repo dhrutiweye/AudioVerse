@@ -46,5 +46,5 @@ if __name__=="__main__":
     result_key = [uploas_transcript(
         os.getenv('S3_BUCKET_NAME'),
         f"VoiceAI/transcript/{f.split('/')[-1].split('.')[0]}.json",
-        f) for f in files]
+        os.path.join(_sarvamclinet.output_dir, f)) for f in files]
     logger.info(f"{result_key}")
