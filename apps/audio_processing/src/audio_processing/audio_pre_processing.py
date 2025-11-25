@@ -59,7 +59,7 @@ def pre_process_call(raw_path, request_id) -> Optional[str]:
         raw_path,
         request_id,
         sample_rate=22050,
-        mp3_bitrate='16k'
+        mp3_bitrate='8k'
     )
 
     if not success or not processed_path:

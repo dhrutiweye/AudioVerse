@@ -2,7 +2,7 @@ import asyncio
 import os
 import uuid
 
-from .audio_pre_processing import pre_process_call
+from audio_pre_processing import pre_process_call
 from helper import S3Service
 from helper import get_logger
 from spech_to_text import SarvamSpeechService
