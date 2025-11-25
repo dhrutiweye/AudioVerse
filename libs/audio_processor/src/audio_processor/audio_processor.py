@@ -248,9 +248,8 @@ class AudioProcessor:
                 audio_data *= 0.95
 
             # Create temporary file for processed audio
-            with os.path.join(tempfile.gettempdir(), os.path.basename(input_path)) as tmp:
-                tmp_path = tmp.name
-                save_audio(audio_data, tmp_path, sr, mp3_bitrate=mp3_bitrate)
+            tmp_path = os.path.join(tempfile.gettempdir(), os.path.basename(input_path))
+            save_audio(audio_data, tmp_path, sr, mp3_bitrate=mp3_bitrate)
             return True, tmp_path, None
         except Exception as e:
             error_msg = f"Error processing audio: {str(e)}"
