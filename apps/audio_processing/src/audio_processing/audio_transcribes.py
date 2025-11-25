@@ -49,7 +49,7 @@ def uploas_pre_processed_audio(bucket: str, s3_key: str, filepath :str) -> str:
     return filepath
 
 if __name__=="__main__":
-    x = get_file_from_s3(os.getenv('S3_BUCKET_NAME') , 'VoiceAI/recording/4_nov_2025_1763414527466.mp3')
+    x = get_file_from_s3(os.getenv('S3_BUCKET_NAME'), 'VoiceAI/recording/4_nov_2025_1763414527466.mp3')
     request_id = str(uuid.uuid4())
     processed_path = pre_process_call(x, request_id)
     path = uploas_pre_processed_audio(os.getenv('S3_BUCKET_NAME'),
