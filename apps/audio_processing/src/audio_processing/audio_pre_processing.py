@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import datetime, timedelta
@@ -55,12 +56,12 @@ logger = get_logger(os.path.basename(__file__))
 
 def pre_process_call(raw_path, request_id) -> Optional[str]:
     audio_processor = AudioProcessor()
-    success, processed_path, error = await audio_processor.process_audio(
+    success, processed_path, error = asyncio.run(audio_processor.process_audio(
         raw_path,
         request_id,
         sample_rate=22050,
         mp3_bitrate='8k'
-    )
+    ))
 
     if not success or not processed_path:
         raise Exception(f"Audio processing failed: {error}")
