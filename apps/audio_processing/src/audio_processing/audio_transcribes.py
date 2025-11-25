@@ -53,7 +53,7 @@ if __name__=="__main__":
     request_id = str(uuid.uuid4())
     processed_path = pre_process_call(x, request_id)
     path = uploas_pre_processed_audio(os.getenv('S3_BUCKET_NAME'),
-                                      f"VoiceAI/processed/{x.split('/')[-1].split('.')[0]}.json", processed_path)
+                                      f"VoiceAI/processed/{x.split('/')[-1].split('.')[0]}.mp3", processed_path)
     files = get_transcript_from_stt(processed_path)
     result_key = [uploas_transcript(
         os.getenv('S3_BUCKET_NAME'),
