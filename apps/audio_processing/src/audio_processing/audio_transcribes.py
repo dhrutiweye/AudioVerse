@@ -45,12 +45,6 @@ def uploas_pre_processed_audio(bucket: str, s3_key: str, filepath :str) -> str:
     if not os.path.exists(filepath):
         logger.error(f"File {filepath} does not exist.")
         return None
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            json.load(f)
-    except Exception as e:
-        logger.error(f"File {filepath} is not a valid JSON file. Error: {e}")
-        return None
     _s3service.upload_file(bucket, s3_key, filepath)
     return filepath
 
