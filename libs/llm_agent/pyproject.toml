@@ -14,7 +14,8 @@ dependencies = [
     "pydantic (>=2.7.4)",
     "typing-extensions (>=4.10.0)",
     "loguru (>=0.7.3,<0.8.0)",
-    "langchain-openai (>=1.0.1,<2.0.0)"
+    "langchain-openai (>=1.0.1,<2.0.0)",
+    "mem0ai (>=1.0.1,<2.0.0)"
 ]
 
 packages = [{include = "llm_agent", from = "src"}]

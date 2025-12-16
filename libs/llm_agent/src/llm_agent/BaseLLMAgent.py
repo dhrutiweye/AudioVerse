@@ -1,4 +1,5 @@
 """BaseAgent class for creating agent implementations."""
+import os
 from typing import Any, Dict, Optional, Union, List
 
 from langchain_core.output_parsers import StrOutputParser
@@ -21,7 +22,7 @@ class BaseLLMAgent:
             self.output_parser = StrOutputParser()  # Fallback for plain text
 
         self.llm = llm or ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.5,
-                                                 google_api_key='AIzaSyB6r1cXq_c6w99AVRzahIaoSL3OZjD8hrg')
+                                                 google_api_key=os.getenv('GOOGLE_AI_API_KEY'))
 
     def generate_response(self, prompt: str):
         chain = self.llm | self.output_parser
@@ -45,6 +46,20 @@ class BaseLLMAgent:
         # Fallback for string-based prompt
         if isinstance(prompt, str):
             return chain.invoke(prompt)
+
+        raise ValueError("Invalid prompt type. Expected str or dict based on usage.")
+
+    def generate_responseV3(self, prompt: Union[str, Dict[str, str]]):
+        chain = self.llm | self.output_parser
+
+        if self.prompt_template and isinstance(prompt, dict):
+            formatted_prompt = self.prompt_template.format(**prompt)
+            # print(formatted_prompt)
+            return formatted_prompt, chain.invoke(formatted_prompt)
+
+        # Fallback for string-based prompt
+        if isinstance(prompt, str):
+            return prompt, chain.invoke(prompt)
 
         raise ValueError("Invalid prompt type. Expected str or dict based on usage.")
 
