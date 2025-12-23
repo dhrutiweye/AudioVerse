@@ -15,7 +15,8 @@ dependencies = [
     "typing-extensions (>=4.10.0)",
     "loguru (>=0.7.3,<0.8.0)",
     "langchain-openai (>=1.0.1,<2.0.0)",
-    "mem0ai (>=1.0.1,<2.0.0)"
+    "mem0ai (>=1.0.1,<2.0.0)",
+    "langchain-community (>=0.4.1,<0.5.0)"
 ]
 
 packages = [{include = "llm_agent", from = "src"}]

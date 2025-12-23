@@ -8,7 +8,7 @@ from qdrant_client.http.models import (
 )
 
 # ---- Qdrant connection & defaults ----
-QDRANT_URL = f"http://{os.getenv('QDRANT_HOST', '10.20.4.235')}:{os.getenv('QDRANT_PORT', '6333')}"
+QDRANT_URL = f"http://{os.getenv('QDRANT_HOST')}:{os.getenv('QDRANT_PORT')}"
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
 QDRANT_TIMEOUT = int(os.getenv("QDRANT_TIMEOUT", "30"))
 DEFAULT_VECTOR_SIZE = int(os.getenv("VECTOR_SIZE", "384"))  # fallback
